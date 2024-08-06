@@ -45,3 +45,19 @@
   #root, #__next {
     isolation: isolate;
   }
+
+
+  /* basic layout */
+
+  .container {
+    height: 100vh;
+  }
+
+  .formTemp {
+    position: relative;
+  }
+
+  .tempContainer {
+    position: absolute;
+    
+  }

@@ -1,4 +1,7 @@
 import "../assets/styles/styles.css";
-import { compareAsc, format } from "date-fns";
+import setupData from "./data";
+import getType from "./type";
 
-console.log("hello world");
+
+const dataMon = setupData();
+dataMon.getData("lisbon", getType);
