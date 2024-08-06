@@ -37,7 +37,8 @@ export default function setupData() {
         });
 
         currentLocation = tempLocation;
-        console.log(tempLocation);
+        
+        return currentLocation;
 
         
     }
