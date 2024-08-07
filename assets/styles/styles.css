@@ -1,3 +1,25 @@
+@font-face {
+  font-family: 'OpenNormal';
+  src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenBold';
+  src: url('../fonts/OpenSans-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenItalic';
+  src: url('../fonts/OpenSans-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+
 /* by Josh W. Comeau taken from https://www.joshwcomeau.com/css/custom-css-reset/ */
 /*
   1. Use a more-intuitive box-sizing model.
@@ -47,17 +69,184 @@
   }
 
 
-  /* basic layout */
+  /* basic layout and styling */
+
+  body {
+    height: 100vh;
+    background-color: #a5f3fc;
+    font-family: "OpenNormal",'Times New Roman', Times, serif;
+    
+  }
 
   .container {
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .formTemp {
     position: relative;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    
   }
 
   .tempContainer {
     position: absolute;
+    right: 70px; 
+    user-select: none; 
     
   }
+
+  .mainBody {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .todayDiv {
+    grid-row: 1 / 3;
+    padding: 10px 10px 10px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+  }
+
+  .restDiv {
+    grid-row: 1 / 3;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    padding: 10px 70px 10px 10px;
+    cursor: default;
+    
+  }
+
+ .bigIcon {
+    max-width: min(150px, 15vw);
+    
+  }
+
+  .waterSign {
+    width: min(40px, 5vw);
+    
+
+  }
+
+  .header {
+    padding: 30px;
+    text-align: center;
+    cursor: default;
+    user-select: none;
+    font-size: 2rem;
+  }
+
+  .zoneName {
+    text-align: center;
+    padding: 15px;
+    cursor: default;
+    user-select: none;
+    font-size: 1.5rem;
+  }
+
+  .errorDiv {
+    height: 10px;
+    margin-top: -15px;
+    text-align: center;
+    user-select: none;
+    cursor: default;
+    font-family: "OpenItalic";
+    font-size: 0.9rem;
+  }
+
+  .tempDiv {
+    display: flex;
+    gap: 15px;
+    color: #9a3412;
+    
+  }
+
+  .restDiv>div,
+  .todayDiv>div {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background-color:#7dd3fc;
+    border-radius: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #3b82f6;
+    box-shadow: 5px 5px 5px #60a5fa;
+    user-select: none;
+    
+    
+  }
+
+  .waterDiv {
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    justify-content: space-between;
+    color: #1d4ed8;
+  }
+
+  .todayDiv>div {
+    width: min(300px, 20vw);
+  }
+
+  #searchForm {
+    display: flex;
+  }
+
+  .searchButton {
+    width: min(50px, 5vw);
+    background-color: transparent;
+    border: none;
+    user-select: none;
+    
+
+  }
+
+  .searchInput,
+  .searchInput:active {
+    background-color: #cffafe;
+    border: none;
+    border-radius: 10px;
+  }
+
+  .searchInput:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .selectMenu {
+    border-radius: 5px;
+    padding: 2px;
+    background-color: #22d3ee;
+    user-select: none;
+    border-color: #0891b2;
+  }
+
+  .selectMenu:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .waterDiv>div {
+    text-align: center;
+  }
+
+  .dateDiv {
+    font-family: "OpenBold";
+  }
+  
+
+
+  
+  

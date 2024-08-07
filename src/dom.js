@@ -1,4 +1,4 @@
-import { compareAsc} from "date-fns";
+import { format, isToday, isTomorrow} from "date-fns";
 import waterIcon from "../assets/img/water.svg";
 import humidIcon from "../assets/img/water-percent.svg";
 import searchIcon from "../assets/img/magnify.svg";
@@ -13,26 +13,41 @@ export default function setupDom() {
     const makeCard = function MakeCardFromData(data) {
         const mainDiv = document.createElement("div");
         const dateDiv = document.createElement("div");
+        dateDiv.classList.toggle("dateDiv");
         const imgDiv = getIcon(data);
+        imgDiv.setAttribute("alt", data.icon);
+        imgDiv.classList.toggle("bigIcon");
         const tempDiv = document.createElement("div");
+        tempDiv.classList.toggle("tempDiv");
         const minTempDiv = document.createElement("div");
         const avgTempDiv = document.createElement("div");
         const maxTempDiv = document.createElement("div");
         const waterDiv = document.createElement("div");
+        waterDiv.classList.toggle("waterDiv");
         const precipDiv = document.createElement("div");
         const precipText = document.createElement("div");
         const precipIcon = new Image();
         precipIcon.src = waterIcon;
+        precipIcon.classList.toggle("waterSign");
         const humidityDiv = document.createElement("div");
         const humidityText = document.createElement("div");
         const humidityIcon = new Image();
         humidityIcon.src = humidIcon;
-        dateDiv.textContent = data.date;
-        minTempDiv.textContent = data.tempMinMetric;
-        avgTempDiv.textContent = data.tempMetric;
-        maxTempDiv.textContent = data.tempMaxMetric;
-        precipText.textContent = data.precipitation;
-        humidityText.textContent = data.humidity;
+        humidityIcon.classList.toggle("waterSign");
+        if (isToday(data.date)) {
+            dateDiv.textContent = "Today";
+        } else if (isTomorrow(data.date)) {
+            dateDiv.textContent = "Tomorrow";
+        } else {
+            dateDiv.textContent = format(data.date, "eeee");
+        }
+        const celciusEnd = " °C";
+        const percentageEnd = "%";
+        minTempDiv.textContent = data.tempMinMetric + celciusEnd;
+        avgTempDiv.textContent = data.tempMetric + celciusEnd;
+        maxTempDiv.textContent = data.tempMaxMetric + celciusEnd;
+        precipText.textContent = data.precipitation + percentageEnd;
+        humidityText.textContent = data.humidity + percentageEnd;
 
         tempDiv.appendChild(minTempDiv);
         tempDiv.appendChild(avgTempDiv);
@@ -55,8 +70,11 @@ export default function setupDom() {
     }
 
     const updatePage = function updatePageWithNewLocationData(location) {
-
-        console.log(location)
+        console.log(location);
+        if (!location) {
+            return;
+        }
+        
         const zoneDiv = document.querySelector(".zoneName");
         zoneDiv.textContent = location.zone;
         const firstDiv = document.querySelector(".todayDiv");
@@ -106,28 +124,66 @@ export default function setupDom() {
     }
 
     const changeTemperature = function changeTempToUSorMetric(location, measure) {
+        let finalString;
+        if (measure === "US") {
+            finalString = " °F";
+
+        } else if (measure === "Metric") {
+            finalString = " °C";
+
+        }
         const todayDiv = document.querySelector(".todayDiv");
         const firstDiv = todayDiv.children[0].children[2].children;
-        firstDiv[0].textContent = location.days[0][`tempMin${measure}`];
-        firstDiv[1].textContent = location.days[0][`temp${measure}`];
-        firstDiv[2].textContent = location.days[0][`tempMax${measure}`];
+        firstDiv[0].textContent = location.days[0][`tempMin${measure}`] + finalString;
+        firstDiv[1].textContent = location.days[0][`temp${measure}`] + finalString;
+        firstDiv[2].textContent = location.days[0][`tempMax${measure}`] + finalString;
 
         const restDiv = document.querySelector(".restDiv");
         const restChildren = restDiv.children;
 
         Array.from(restChildren).forEach((day, index) => {
             const currentDiv = day.children[2].children;
-            currentDiv[0].textContent = location.days[index+1][`tempMin${measure}`];
-            currentDiv[1].textContent = location.days[index+1][`temp${measure}`];
-            currentDiv[2].textContent = location.days[index+1][`tempMax${measure}`];
+            currentDiv[0].textContent = location.days[index+1][`tempMin${measure}`] + finalString;
+            currentDiv[1].textContent = location.days[index+1][`temp${measure}`] + finalString;
+            currentDiv[2].textContent = location.days[index+1][`tempMax${measure}`] + finalString;
 
         })
 
 
     }
 
+    const getFormData = function getLocationFromFormInput() {
+        const formDiv = document.querySelector("#searchForm");
+        const formData = new FormData(formDiv);
+        const userInput = formData.get("search");
+        return userInput;
+    }
+
+    const getMeasure = function getMeasureFromSelectMenu(selectDiv) {
+        const newMeasure = selectDiv.options[selectDiv.selectedIndex].value;
+        return newMeasure;
+
+    }
+
+    const startSearch = function displaySearching() {
+        const searchDiv = document.querySelector(".errorDiv");
+        searchDiv.textContent = "Searching...";
+    }
+
+    const emptySearch = function displayNothingWasFound() {
+        const searchDiv = document.querySelector(".errorDiv");
+        searchDiv.textContent = "Nothing Found";
+
+    }
+
+    const clearSearch = function clearTheMessageAboutSearching() {
+        const searchDiv = document.querySelector(".errorDiv");
+        searchDiv.textContent = "";
+    }
+
     const containerDiv = document.querySelector(".container");
     const headerDiv = document.createElement("div");
+    headerDiv.textContent = "Odin Weather App";
     headerDiv.classList.toggle("header");
     const formTempDiv = document.createElement("div");
     formTempDiv.classList.toggle("formTemp");
@@ -145,6 +201,7 @@ export default function setupDom() {
     buttonDiv.classList.toggle("searchButton");
     const buttonIcon = new Image();
     buttonIcon.src = searchIcon;
+    buttonIcon.setAttribute("alt", "Search Button");
     const tempContainer = document.createElement("div");
     tempContainer.classList.toggle("tempContainer");
     const zoneNameDiv = document.createElement("div");
@@ -155,6 +212,11 @@ export default function setupDom() {
     todayDiv.classList.toggle("todayDiv");
     const restDiv = document.createElement("div");
     restDiv.classList.toggle("restDiv");
+    const middleDiv = document.createElement("div");
+    middleDiv.classList.toggle("middleDiv");
+    const errorDiv = document.createElement("div");
+    errorDiv.textContent = "";
+    errorDiv.classList.toggle("errorDiv");
 
     buttonDiv.appendChild(buttonIcon);
     rawForm.appendChild(inputDiv);
@@ -166,13 +228,15 @@ export default function setupDom() {
     mainDiv.appendChild(restDiv);
 
 
+    middleDiv.appendChild(errorDiv);
+    middleDiv.appendChild(zoneNameDiv);
     containerDiv.appendChild(headerDiv);
     containerDiv.appendChild(formTempDiv);
-    containerDiv.appendChild(zoneNameDiv);
+    containerDiv.appendChild(middleDiv);
     containerDiv.appendChild(mainDiv);
 
 
 
-    return {updatePage, changeTemperature};
+    return {updatePage, changeTemperature, getFormData, getMeasure, startSearch, emptySearch, clearSearch};
 
 }

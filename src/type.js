@@ -1,4 +1,11 @@
 export default function getType(value) {
+    let userInput;
+    if (value.includes(",")) {
+        userInput = value.split(",")[0].trim();
+
+    } else {
+        userInput = value;
+    }
     const typeArr = [
         ["weather-cloudy", "type_41"],
         ["weather-sunny", "type_43"],
@@ -22,7 +29,7 @@ export default function getType(value) {
     ]
 
     const weatherType = typeArr.find((row) => {
-        return (row.find((cell) => cell === value ))
+        return (row.find((cell) => cell === userInput ))
     });
     return weatherType[0];
 }

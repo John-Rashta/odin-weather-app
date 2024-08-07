@@ -5,14 +5,15 @@ export default function setupData() {
 
     const getData = async (location, typeFunc) => {
         const rawData = await getApiData(location).catch(() => {return});
+        console.log(rawData);
         
         if (!rawData) {
-            return;
+            throw new Error("Data is empty");
         }
 
         const [apiMetric, apiUS] = rawData;
         const tempLocation = {
-            zone: apiMetric.timezone,
+            zone: apiMetric.resolvedAddress,
             days:[],
         };
 
@@ -23,7 +24,7 @@ export default function setupData() {
                 tempMaxMetric: day.tempmax,
                 tempMinMetric: day.tempmin,
                 humidity: day.humidity,
-                precipitation: day.precip,
+                precipitation: day.precipprob,
                 type: day.conditions,
                 icon: typeFunc(day.conditions),
             };
@@ -35,7 +36,7 @@ export default function setupData() {
             day.tempMaxUS = apiUS.days[index].tempmax;
             day.tempMinUS = apiUS.days[index].tempmin;
         });
-
+        
         currentLocation = tempLocation;
         
         return currentLocation;
